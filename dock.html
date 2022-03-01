@@ -1,0 +1,1124 @@
+<html>
+<head>
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+	<meta content="utf-8" http-equiv="encoding" />
+	<title>Social Stream - Dashboard</title>
+	<meta name="title" content="Social Stream - Dashboard" />
+	<link rel="icon" href="./icons/favicon.ico" />
+	<style>
+	
+		:root {
+			--show-emoji-only: flex;
+			--scale-output-moz: scale(1.0);
+			--scale-output: 1.0;
+			--font-color: #000;
+			--font-color-name: #000;
+			--background-color: #FFF0;
+			--link-color: #06F;
+			--input-color: #FFF;
+			--highlight-base: #FFF1;
+			--highlight-base2: #4441;
+			--highlight-compact: #3335;
+			--highlight-compact2: #3333;
+		}
+	
+		.noText {
+			display: var(--show-emoji-only) !important;
+		}
+
+		#output { 
+			zoom: var(--scale-output);
+			-moz-transform: var(--scale-output-moz);
+			-moz-transform-origin: 0 0;
+			width:100%;
+		} 
+		
+		a {
+			color: var(--link-color);
+			display: contents;
+			text-decoration:none
+		}
+		
+		body {
+			font-family: Roboto, Arial, sans-serif;
+			color: var(--font-color);
+			margin: 0 0;
+			background-color: var(--background-color);
+		}
+		
+		.bot {
+			padding: 5px 0;
+		}
+		
+		.bot > .hl-message {
+			padding: 5px 0 5px 5px;
+			font-style: italic;
+		}
+		
+		.hl-name {
+			font-weight: 700;
+			margin: auto 5px auto 5px;
+			position:relative;
+			left: 0;
+			width: fit-content;
+			color: var(--font-color-name);
+		}
+		
+		.hl-badges {
+			max-width:28px;
+			max-height:28px;
+			object-fit: contain;
+			position:relative;
+			top:-6px;
+		}
+
+		.hl-message{
+			margin: auto 0;
+			overflow-wrap: anywhere;
+		}
+		
+		div {
+			display:inline-block;
+		}
+		
+		
+		.highlight {
+			background-color:yellow!important;
+		}
+		
+		img {
+			display:inline-block;
+			max-width:20px;
+			max-height:20px;
+			position:relative;
+			margin: auto;
+			padding: 0;
+			object-fit: contain;
+			vertical-align:middle;
+		}
+		
+		.hide {
+			display: none !important;
+		}
+		
+		.highlight-chat {
+			display:flex;
+			cursor:pointer;
+			min-height:28px;
+			transition: .5s all cubic-bezier(0.250, 0.250, 0.105, 1.2);
+			width:fit-content;
+			background-color: var(--highlight-base);
+		}
+		
+		.notcompactmode>.hl-message{
+			width: 100%;
+		}
+		.notcompactmode>.hl-name{
+			font-weight: 700;
+			margin: auto 10px auto 5px;
+			min-width: 148px;
+			max-width: 220px;
+			white-space: unset;
+			overflow:hidden;
+		}
+		
+		.notcompactmode>.highlight-chat{
+			width:100%;
+		}
+		
+		.highlight-chat:nth-child(odd){
+			background-color: var(--highlight-base2);
+		}
+		
+		.highlight-chat:hover {
+			background-color: #AFA4;
+		}
+		
+		.highlight-chat.compactmode{
+			background-color: var(--highlight-compact); 
+			border-top-right-radius: 3px;
+			border-bottom-right-radius: 3px;
+			padding-right:3px;
+		}
+		
+		.highlight-chat:nth-child(odd).compactmode{
+			background-color: var(--highlight-compact2);
+		}
+		
+		.highlight-chat.donation{
+			background-color: #FEFFAD33;
+		}
+		
+		.highlight-chat:nth-child.donation(odd){
+			background-color: #FDFF6533;
+		}
+		
+		.highlight-chat.member{
+			background-color: #ADFEFF33;
+		}
+		
+		.highlight-chat:nth-child.member(odd){
+			background-color: #65FDFF33;
+		}
+		
+		.donationAmount{
+			-webkit-animation: glow 1s ease-in-out infinite alternate;
+			-moz-animation: glow 1s ease-in-out infinite alternate;
+			animation: glow 1s ease-in-out infinite alternate;
+			padding:5px;
+			margin: auto;
+			white-space: nowrap;
+		}
+
+		@-webkit-keyframes glow {
+		    from {
+				text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #FFe60073, 0 0 40px #FFe60073, 0 0 50px #FFe60073, 0 0 60px #FFe60073, 0 0 70px #FFe60073;
+			}
+			to {
+				text-shadow: 0 0 20px #fff, 0 0 30px #FFff4da6, 0 0 40px #FFff4da6, 0 0 50px #FFff4da6, 0 0 60px #FFff4da6, 0 0 70px #FFff4da6, 0 0 80px #FFff4da6;
+			}
+		}
+		
+		.hl-message img{
+			position:relative;
+			margin: auto 0;
+			padding: 0;
+			display:inline-block;
+			width: 20px;
+		}
+		
+		a {
+			pointer-events: none;
+		}
+		
+		.time-arrived {
+			font-size: 10px;
+			display: block;
+			margin: auto 1px;
+			padding-right: 2px;
+			left: 1px;
+			position: relative;
+			white-space: nowrap;
+			vertical-align:middle;
+		}
+		
+		#menu {
+			position:fixed;
+			top:0;
+			right:0;
+			display:block;
+		}
+		
+		#menu > button {
+			display:inline-block;
+			padding:5px;
+			margin: 5px;
+			background-color: #DDD2;
+			opacity:0.9;
+		}
+		#menu > button:hover {
+			background-color: #DDDF;
+			cursor: pointer;
+			opacity:1.0;
+		}
+		#menu > button.red {
+			background-color: #FCC4;
+		}
+		#menu > button.red:hover {
+			background-color: #FCCF;
+		}
+		#menu > input {
+			padding: 5px;
+			background-color: var(--input-color);
+			border: 1px solid black;
+			border-radius: 5px;
+		}
+		#menu > input:focus {
+		  background-color: var(--input-color);
+		}
+		
+		#menu.darkmode > button {
+			background-color: #0004;
+			color:white;
+		}
+		#menu.darkmode > button:hover {
+			background-color: #000F;
+			opacity:1.0;
+		}
+		#menu.darkmode > button.red {
+			background-color: #F004;
+		}
+		#menu.darkmode > button.red:hover {
+			background-color: #600F;
+		}
+		#menu.darkmode > input {
+			background-color: #0004;
+			color:white;
+			border: 1px solid white;
+		}
+		#menu.darkmode > input:hover {
+			background-color: #0000;
+		}
+		
+		@media only screen and (max-width: 1000px){
+			#menu > button {
+				display:inline-block;
+				padding:2px;
+				margin: 1px;
+				font-size:95%;
+			}
+			#menu > input {
+				display:inline-block;
+				padding:5px 4px;
+				margin: 1px;
+				font-size:85%;
+				max-width: 110px;
+			}
+		}
+		@media only screen and (max-width: 870px){
+			#menu > button {
+				display:inline-block;
+				margin: 1px;
+				font-size:80%;
+			}
+			#menu > input {
+				display:inline-block;
+				padding:5px 3px;
+				margin: 1px;
+				font-size:75%;
+				max-width: 100px;
+			}
+		}
+		@media only screen and (max-width: 640px){
+			#menu > button {
+				display:inline-block;
+				margin: 0px;
+				font-size:75%;
+			}
+			#menu > input {
+				display:inline-block;
+				padding:4px 2px;
+				margin: 0px;
+				font-size:70%;
+				max-width: 80px;
+			}
+		}
+		@media only screen and (max-width: 480px){
+			#menu > button {
+				display:inline-block;
+				margin: 0px;
+				font-size:70%;
+			}
+			#menu > input {
+				display:inline-block;
+				padding:3px 1px;
+				margin: 0px;
+				font-size:70%;
+				max-width: 70px;
+			}
+		}
+		.pressed {
+			background-color: #9C9C !important;
+		}
+		
+		.icon {
+			margin: auto 1px auto 3px;
+			border-radius: 50%;
+		}
+		
+		.invert {
+			filter: invert(1);
+		}
+		
+		#jumpto {
+			position: fixed !important;
+			right: 20px;
+			bottom: 20px;
+		}
+		
+		#jumpto {
+			position: fixed !important;
+			right: 20px;
+			bottom: 20px;
+		}
+		
+		
+		
+		input[type="text"] {
+			width: 110px;
+		}
+
+		input[type="text"]:focus {
+			width: 170px;
+		}
+		#filter_messages{
+			width: 45px;
+		}
+		#filter_messages:focus{
+			width: 150px;
+		}
+		input[type="text"] {
+			-webkit-transition: all 0.4s ease 0s;
+			-moz-transition: all 0.4s ease 0s;
+			-o-transition: all 0.4s ease 0s;
+			transition: all 0.4s ease 0s;
+		}
+		input::placeholder{
+			color: var(--input-color);
+		}
+
+	</style>
+</head>
+<body>
+	<div id="output" class="output notcompactmode"></div>
+	<div id="menu">
+		<button id="clear_overlay" data-state="0" onclick="sendDataP2P(false);" class="red">Clear Current Overlay</button>
+		<button id="pause" data-state="0" onclick="pause(this);">⏯︎ Pause</button>
+		<button id="autoshow" data-state="0" onclick="autoShow(this);" title="Auto-feature chat messages as they come in">Auto</button>
+		<input id="filter_messages" onchange="filterMessages(this.value);" placeholder="Filter messages" type="text" />
+		<button id="hide_emoji" data-state="0" onclick="emoji(this);" title="Hide all emoji-only messages">🚫🙂</button>
+		<button id="say_hello" data-state="0" onclick="toggleChat();" title="Send a text message to all social endpoints">💬</button>
+		<input type="text" id="chatInput" style="display:none;" placeholder="Say something.." />
+		<button id="jumpto" data-state="0" onclick="jumptoBottom(this);" title="Jump to bottom">V</button>
+		
+	<div>
+	<script>
+	
+	
+	
+	window.onerror = function backupErr(errorMsg, url=false, lineNumber=false) {
+		console.error(errorMsg);
+		console.error(lineNumber);
+		console.error("Unhandeled Error occured"); //or any message
+		return false;
+	};
+	
+	(function (w) {
+		w.URLSearchParams = w.URLSearchParams || function (searchString) {
+			var self = this;
+			self.searchString = searchString;
+			self.get = function (name) {
+				var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(self.searchString);
+				if (results == null) {
+					return null;
+				} else {
+					return decodeURI(results[1]) || 0;
+				}
+			};
+		};
+
+	})(window);
+	var urlParams = new URLSearchParams(window.location.search);
+	var channel = null;
+	var counter = 0;
+	var iframe = null;
+	var queue = [];
+	var datestamp = true;
+	var nextComment = null;
+	var roomID = "test";
+	var messageTimeout = 0;
+	var filtering = false;
+	var applyCustomActions = false;
+	var showsource = true;
+	var compactmode = false;
+	var darkmode = true;
+	var scale = 1;
+	var forceAutoscroll = false;
+	var triggerState = true;
+	var emojis = true;
+	var pauseState = false;
+	var timeoutTimer = null;
+	var isOBSBrowserSource = false;
+	var customNodeLimit = false;
+	var autoTimeout = false;
+	var body = document.body;
+	var html = document.documentElement;
+	var mainOutputWindow = document.getElementById("output");
+	
+	if (urlParams.has("session")){
+		roomID = urlParams.get("session");
+	} else if (urlParams.has("s")){
+		roomID = urlParams.get("s");
+	} else if (urlParams.has("id")){
+		roomID = urlParams.get("id");
+	} else if (window.location.protocol=="file:"){
+		roomID = prompt("Enter your session ID here, or add it to the URL.");
+	} else {
+		window.location.href = "https://github.com/steveseguin/live-chat-overlay#readme";
+	}
+	
+	if (urlParams.has("nodate") || urlParams.has("notimestamp") || urlParams.has("notime")){
+		datestamp = false;
+	} 
+	
+	if (urlParams.has("hidesource")){
+		showsource = false;
+	} 
+	
+	
+	if (urlParams.has("limit")){
+		customNodeLimit = parseInt(urlParams.get("limit")) || 100;
+	}
+	
+	var autoshow = false;
+	if (urlParams.has("autoshow")){
+		autoshow = true;
+		document.getElementById("autoshow").classList.add("pressed");
+	} 
+	
+	if (urlParams.has("scale")){
+		scale = urlParams.get("scale") || 1.0;
+		scale = parseFloat(scale);
+		document.documentElement.style.setProperty("--scale-output", scale);
+		document.documentElement.style.setProperty("--scale-output-moz", "scale("+scale+")");
+	}
+	
+	if (urlParams.has("compact")){
+		compactmode = true;
+		mainOutputWindow.classList.remove("notcompactmode");
+		document.getElementById("menu").style.display = "none";
+	} 
+	
+	if (urlParams.has("hidemenu")){
+		document.getElementById("menu").style.display = "none";
+	}
+	
+	
+	var thirdPartyAPI = false;
+	if (urlParams.has("singular")){
+		thirdPartyAPI = function (data){
+			var API = "https://app.singular.live/apiv1/datanodes/"+urlParams.get("singular")+"/data";
+			var message = {"payload": data};
+			ajax(message, API, "PUT");
+		};
+	}
+	
+	function ajax(object2send, url, ajaxType="PUT"){
+		  var xhttp = new XMLHttpRequest();
+		  xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				// success
+			} else {
+				console.error("there was an error sending to the API");
+			}
+		  };
+		  xhttp.open(ajaxType, url, true); // async = true
+		  xhttp.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+		  xhttp.send(JSON.stringify(object2send));
+	}
+	
+	
+	try {
+		if (window.obsstudio){
+			window.obsstudio.getStatus(function(obsStatus){
+				document.getElementById("menu").style.display = "none";
+				document.body.style.overflow = "hidden";
+				mainOutputWindow.style.overflow = "hidden";
+				triggerState=false;
+				forceAutoscroll=true;
+				//compactmode=true;
+				//mainOutputWindow.classList.remove("notcompactmode");
+				scale = scale*2.0
+				document.documentElement.style.setProperty("--scale-output", scale);
+				document.documentElement.style.setProperty("--scale-output-moz", "scale("+scale+")");
+				isOBSBrowserSource = true;
+			});
+		}
+	} catch(e){}
+	
+	if (urlParams.has("darkmode")){
+		darkmode=true;
+	} else if (urlParams.has("lightmode")){
+		darkmode=false;
+	}
+	
+	if (darkmode){
+		document.documentElement.style.setProperty("--font-color", "#FFF");
+		document.documentElement.style.setProperty("--background-color", "#000");
+		document.documentElement.style.setProperty("--font-color-name", "#DDD");
+		document.documentElement.style.setProperty("--link-color", "#5AF");
+		document.documentElement.style.setProperty("--input-color", "#5AF");
+		document.getElementById("menu").classList.add("darkmode");
+	}
+	
+	if (urlParams.has("hideshadow")){
+		document.documentElement.style.setProperty("--highlight-base", "#0000", "important");
+		document.documentElement.style.setProperty("--highlight-base2", "#0000", "important");
+		
+		document.documentElement.style.setProperty("--highlight-compact", "#0000", "important");
+		document.documentElement.style.setProperty("--highlight-compact2", "#0000", "important");
+		
+	}
+	
+	function emoji(ele){
+		if (ele.dataset.state=="0"){
+			ele.dataset.state = "1";
+			document.documentElement.style.setProperty("--show-emoji-only", "none");
+			ele.classList.add("pressed");
+		} else {
+			ele.dataset.state = "0";
+			document.documentElement.style.setProperty("--show-emoji-only", "flex");
+			ele.classList.remove("pressed");
+		}
+	}
+	
+	function toggleTriggers(ele){
+		triggerState = !triggerState;
+		if (triggerState){
+			ele.classList.add("pressed");
+		} else {
+			ele.classList.remove("pressed");
+		}
+	}
+	
+	function autoShow(ele){
+		autoshow = !autoshow;
+		if (autoshow){
+			ele.classList.add("pressed");
+		} else {
+			ele.classList.remove("pressed");
+		}
+	}
+	
+	
+	function pause(ele){
+		pauseState = !pauseState;
+		
+		ele.innerHTML = "⏯︎";
+		
+		if (pauseState){
+			ele.classList.add("pressed");
+		} else {
+			ele.classList.remove("pressed");
+			var queueR = queue.reverse();
+			queue = [];
+			if (!pauseState){
+				for (var i = 0 ; i<queueR.length; i++){
+					processData( queueR[i] );
+				}
+			}
+		}
+	}
+	
+	try {
+		var script = document.createElement('script');
+		script.onload = function() {
+			console.log("Loaded personal actions");
+		}
+		script.onerror = function(){
+			console.log("no personal actions file found. skipping.");
+		}
+		script.src = "custom.js";
+		document.head.appendChild(script);
+	} catch(e){}
+	
+	
+	function RecvDataWindow(){
+		iframe = document.createElement("iframe");
+		iframe.src = "https://vdo.we-keys.fr/?password=false&view="+roomID+"&push&vd=0&ad=0&autostart&cleanoutput&room="+roomID;
+		
+		iframe.style.width = "0px";
+		iframe.style.height = "0px";
+		iframe.style.position = "fixed";
+		iframe.style.left = "-100px";
+		iframe.style.top = "-100px";
+		iframe.id = "frame1"
+		document.body.appendChild(iframe);
+		
+		var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+		var eventer = window[eventMethod];
+		var messageEvent = eventMethod === "attachEvent" ? "onmessage" : "message";
+		
+		eventer(messageEvent, function (e) {
+		  if (e.source != iframe.contentWindow){return} // reject messages send from other iframes
+		  if ("dataReceived" in e.data){ // raw data 
+			if ("overlayNinja" in e.data.dataReceived){
+				if ("forward" in e.data.dataReceived.overlayNinja){
+					sendDataP2P(e.data.dataReceived.overlayNinja.forward);
+				} else if ("html" in e.data.dataReceived.overlayNinja){
+					processHTML(e.data.dataReceived.overlayNinja);
+				} else if (!pauseState ){
+					processData( {contents : e.data.dataReceived.overlayNinja} );
+				} else {
+					queue.push({contents : e.data.dataReceived.overlayNinja});
+					if (queue.length>100){ // keep the queue from exploding in size
+						queue.shift();
+					}
+				}
+			}
+		  }
+		});
+	}
+	RecvDataWindow();
+	
+	function createElementFromHTML(htmlString) {
+	  var div = document.createElement('div');
+	  div.innerHTML = htmlString.trim();
+	  return div.firstChild; 
+	}
+	
+	
+	if (forceAutoscroll){
+		document.getElementById("jumpto").classList.add("pressed");
+	}
+	
+	function jumptoBottom(ele){
+		forceAutoscroll = !forceAutoscroll;
+		if (forceAutoscroll){
+			ele.classList.add("pressed");
+		} else {
+			ele.classList.remove("pressed");
+		}
+		window.scrollTo({
+		  top: document.body.scrollHeight,
+		  left: 0,
+		  behavior: 'smooth'
+		});
+		window.scrollBy({
+		  top: 100,
+		  left: 0,
+		  behavior: 'smooth'
+		});
+	}
+	
+
+	document.getElementById("filter_messages").addEventListener('keyup', function(e) {
+		if (e.key == "Escape") {
+			document.getElementById("filter_messages").value = "";
+		}
+		filterMessages(document.getElementById("filter_messages").value);
+	});
+	
+	document.getElementById("filter_messages").addEventListener('keydown', function(e) {
+		if (e.key == "Escape") {
+			document.getElementById("filter_messages").value = "";
+		}
+		filterMessages(document.getElementById("filter_messages").value);
+	});
+	
+	function filterMessages(keyword=""){
+		keyword = keyword.trim().toLowerCase();
+		filtering = keyword;
+		var eles = document.querySelectorAll("#output > div");
+		for (var i=0;i<eles.length;i++){
+			if (!keyword){
+				eles[i].classList.remove("hide");
+			} else if (eles[i].textContent.toLowerCase().includes(keyword)){
+				eles[i].classList.remove("hide");
+			} else {
+				eles[i].classList.add("hide");
+			}
+		}
+	}
+	
+	var fallbackImage = new Image();
+	fallbackImage.src = "unknown.png";
+	fallbackImage.onerror = function(){
+		fallbackImage=false;
+	}
+	
+	function errorImage(ele){
+		if (fallbackImage){
+			ele.src = "unknown.png";
+			if (darkmode){
+				ele.classList.add("invert");
+			}
+		} else {
+			ele.style.display = "none";
+		}
+	}
+	
+	function processHTML(data){
+		//counter+=1;
+		//data.counter = counter;
+		//var node = createElementFromHTML('<div id="msg_'+counter+'" class="highlight-chat">'+ data.html+'</div>')
+		//mainOutputWindow.appendChild(node);
+	}
+	
+	function selectedMessage(event=false, element=false){
+		if (!element){
+			element = this;
+		}
+		element.classList.add("pressed");
+		var data = element.rawContents;
+		if (data.type && (data.type == "twitch") && !data.chatimg){
+			var ccc = data.counter;
+			var imgnode = document.getElementById("img_"+ccc);
+			fetch("https://api.action.wtf:667/username/"+data.chatname).then(response => {
+				response.text().then(function (text) {
+					if (text.startsWith("https://")){
+						data.chatimg = text;
+						imgnode.src = text;
+						imgnode.classList.remove("invert");
+						document.getElementById("msg_"+ccc).rawContents.chatimg = text;
+					} else {
+						data.chatimg = 'unknown.png';
+						if (darkmode){
+							imgnode.classList.add("invert");
+						}
+					}
+					if (thirdPartyAPI){
+						thirdPartyAPI(data);
+					} else {
+						sendDataP2P(data);
+					}
+				}).catch(function(){
+					data.chatimg = 'unknown.png';
+					if (darkmode){
+						imgnode.classList.add("invert");
+					}
+					if (thirdPartyAPI){
+						thirdPartyAPI(data);
+					} else {
+						sendDataP2P(data);
+					}
+				});
+			}).catch(error => {
+				console.error(error);
+				data.chatimg = 'unknown.png';
+				if (darkmode){
+					imgnode.classList.add("invert");
+				}
+				if (thirdPartyAPI){
+					thirdPartyAPI(data);
+				} else {
+					sendDataP2P(data);
+				}
+			});
+		} else {
+			if (thirdPartyAPI){
+				thirdPartyAPI(data);
+			} else {
+				sendDataP2P(data);
+			}
+		}
+	};
+	
+	
+	function processData(data){
+		if (data.contents){
+			data = data.contents;
+			
+			var addImage = "";
+			if (data.contentimg){
+				addImage = '<div class="hl-imgContent"><img src="' + data.contentimg + '" class="hl-img-content" onerror="this.parent.style.display=\'none\'" /></div>';
+			} else {
+				data.contentimg = "";
+			}
+			
+			if (data.chatmessage){
+				data.chatmessage = data.chatmessage.trim();
+			} else {
+				data.chatmessage = "";
+			}
+			
+			
+			
+			var donation = "";
+			if (data.hasDonation){
+				donation = "<span class='donationAmount hl-donation'>"+data.hasDonation+"</span>";
+			} else {
+				data.hasDonation = "";
+			}
+			
+			counter+=1;
+			data.counter = counter;
+			
+			if (!data.type){
+				data.type= "none";
+				var showType = "";
+			} else {
+				data.type = data.type.toString();
+				var showType = data.type;
+			}
+			
+			var chatImg = data.chatimg;
+			
+			if (!chatImg){
+				if (fallbackImage){
+					chatImg = "unknown.png";
+					if (darkmode){
+						chatImg = '<img id="img_'+counter+'" src="' + chatImg + '" class="icon invert hl-profile-pic" onerror="errorImage(this);" />'
+					} else {
+						chatImg = '<img id="img_'+counter+'" src="' + chatImg + '" class="icon hl-profile-pic" onerror="errorImage(this);" />'
+					}
+				} else {
+					chatImg = "";
+				}
+			} else {
+				chatImg = '<img id="img_'+counter+'" src="' + chatImg + '" class="icon hl-profile-pic" onerror="errorImage(this);" />'
+			}
+			
+			if (showType && showsource){
+				showType = '<img src="' + showType + '.png" class="icon hl-source-type" data-icon-name="'+showType+'" onerror="this.style.display=\'none\'" />';
+			} else {
+				showType = "";
+			}
+			
+			var timeArrived = "";
+			if (datestamp){
+				var date = new Date();
+				timeArrived = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+				if (compactmode){
+					timeArrived = timeArrived.split(" ")[0];
+				}
+				timeArrived = "<div class='time-arrived'>"+timeArrived+"</div>";
+			}
+			var bot = false;
+			var chatname = "";
+			
+			data.chatname = data.chatname.trim();
+			
+			if (data.chatname){
+				if (compactmode){
+					if (data.chatname.toLowerCase() == "streamelements"){ 
+						bot = true;
+						//chatname = "";
+					} else if (data.chatname.toLowerCase() == "nightbot"){
+						bot = true;
+						//chatname = "";
+					} else if (data.chatname.toLowerCase() == "vdoninja"){ // because why not. :)
+						data.chatname = "VDO.Ninja";
+						chatname = '<div class="hl-name">' + data.chatname+":</div>";
+						bot = true;
+					} else {
+						chatname = '<div class="hl-name">' + data.chatname+":</div>";
+					}
+				} else {
+					chatname = '<div class="hl-name">' + data.chatname+"</div>";
+				}
+			} else {
+				chatname = '<div class="hl-name"></div>';
+			}
+			
+			var node = createElementFromHTML('<div id="msg_'+counter+'" class="highlight-chat" data-source-type="'+data.type+'">'
+				 + showType
+				 + chatImg
+				 + timeArrived
+				 + chatname
+				// + '<div class="hl-badges">' + data.chatbadges + '</div>'
+				 + '<div class="hl-message" id="content_'+counter+'">' + data.chatmessage + '</div>'
+				 + addImage
+				 + donation + '</div>')
+				 
+			
+			if (filtering && !node.textContent.toLowerCase().includes(filtering)){
+				node.classList.add("hide");
+			}
+			
+			if (bot){
+				node.classList.add("bot");
+			}
+			
+			if (data.hasDonation){
+				node.classList.add("donation");
+			}
+			
+			if (data.hasMembership){
+				node.classList.add("member");
+			}
+			
+			if (compactmode && darkmode){
+				node.classList.add("compactmode");
+			} else if (!compactmode){
+				node.classList.add("notcompactmode");
+			}
+		
+			mainOutputWindow.appendChild(node);
+			
+			if (!document.getElementById("content_"+counter).innerText.trim().length){
+				document.getElementById("msg_"+counter).classList.add("noText");
+			}
+			
+			var nameEle = node.querySelector(".hl-name"); // we're going to resize long names to be smaller if they don't fit
+			if (nameEle){
+				var ccc =0;
+				while (nameEle.clientWidth < nameEle.scrollWidth || nameEle.clientHeight < nameEle.scrollHeight){
+					var fontsize = parseInt(window.getComputedStyle(document.querySelector(".hl-name")).fontSize);
+					nameEle.style.fontSize = (fontsize-1)+"px";
+					ccc+=1;
+					if (ccc>10){break;}
+				}
+			}
+			
+			node.rawContents = data;
+			
+			if (autoshow){
+				if (!autoTimeout){
+					selectedMessage(false, node);
+					autoTimeout = setTimeout(function(){
+						autoTimeout=false;
+					},1500);
+				}
+			}
+			
+			node.onmousedown = selectedMessage;
+
+			var imageElements = node.getElementsByTagName("img");
+			for (i = 0; i < imageElements.length; i++) {
+				imageElements[i].onload = function(){
+					var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
+					if ((document.body.scrollHeight<(document.body.scrollTop + document.body.clientHeight+150)) || forceAutoscroll){
+						window.scrollTo({
+						  top: height,
+						  left: 0,
+						  behavior: 'smooth'
+						});
+					}
+				}
+				if (imageElements[i].onerror){continue;}
+				if (!imageElements[i].title && imageElements[i].alt){
+					imageElements[i].title = imageElements[i].alt;
+				}
+				if (darkmode && (node.rawContents.type == "twitch") && imageElements[i].src.includes("/light/")){
+					imageElements[i].srcBackup = imageElements[i].src;
+					imageElements[i].src = imageElements[i].src.replaceAll("/light/","/dark/");
+				}
+				imageElements[i].onerror = function(){
+					if (this.srcBackup){
+						this.src = this.srcBackup;
+						this.srcBackup = null;
+						delete this.srcBackup;
+					} else if (this.alt.length!==2){
+						this.style.display='none';
+					} else {
+						this.outerHTML = this.alt;
+					}
+				}
+			}
+			
+			var nodes = mainOutputWindow.childNodes; // lets delete old nodes based on some factors.
+			
+			if (isOBSBrowserSource){ // This is an OBS browser source, so lets go light on it.
+				if (window.innerHeight>1600){
+					if (nodes.length>39){
+						nodes[0].remove();
+						if (nodes.length>39){
+							nodes[0].remove();
+						}
+					}
+				} else if (window.innerHeight>1200){
+					if (nodes.length>30){
+						nodes[0].remove();
+						if (nodes.length>30){
+							nodes[0].remove();
+						}
+					}
+				} else if (window.innerHeight>800){
+					if (nodes.length>22){
+						nodes[0].remove();
+						if (nodes.length>22){
+							nodes[0].remove();
+						}
+					}
+				} else if (window.innerHeight>400){
+					if (nodes.length>14){
+						nodes[0].remove();
+						if (nodes.length>14){
+							nodes[0].remove();
+						}
+					}
+				} else if (nodes.length>10){
+					nodes[0].remove();
+					if (nodes.length>10){
+						nodes[0].remove();
+					}
+				}
+			} else if (customNodeLimit){
+				if (nodes.length>customNodeLimit){
+					nodes[0].remove();
+					if (nodes.length>customNodeLimit){
+						nodes[0].remove();
+					}
+				}
+			} else if (window.innerHeight>900){
+				if (nodes.length>80){
+					nodes[0].remove();
+					if (nodes.length>80){
+						nodes[0].remove();
+					}
+				}
+			} else if (window.innerHeight>600){
+				if (nodes.length>70){
+					nodes[0].remove();
+					if (nodes.length>70){
+						nodes[0].remove();
+					}
+				}
+			} else if (nodes.length>60){
+				nodes[0].remove();
+				if (nodes.length>60){
+					nodes[0].remove();
+				}
+			}
+			
+			var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
+			if ((document.body.scrollHeight<(document.body.scrollTop + document.body.clientHeight+150)) || forceAutoscroll){
+				window.scrollTo({
+				  top: height,
+				  left: 0,
+				  behavior: 'smooth'
+				});
+			}
+			
+			applyBotActions(data); // Official actions
+			
+			if (triggerState){
+				try {
+					if (applyCustomActions){
+						applyCustomActions(data); // Any custom actions (not synced with github)
+					}
+				} catch(e){
+					console.error(e);
+				}
+			}
+		}
+	}
+	
+	function applyBotActions(data){ // this can be customized to create bot-like auto-responses/actions.
+		if (triggerState && data.chatmessage.includes("!highlight")){
+			document.getElementById("msg_"+data.counter).classList.add("highlight"); // sample method of highlighting
+		}
+	}
+	
+	function sendDataP2P(data){
+		var msg = {};
+		msg.overlayNinja = {};
+		msg.overlayNinja = data;
+		try {
+			iframe.contentWindow.postMessage({"sendData":msg, "type":"pcs"}, '*'); // send only to viewers of this stream; not back to the chrome extension..
+		} catch(e){}
+	}
+	
+	document.getElementById("chatInput").addEventListener("keyup", function(event) {
+		if (event.keyCode === 13) {
+			event.preventDefault();
+			respondP2P(document.getElementById("chatInput").value);
+			document.getElementById("chatInput").value = "";
+		}
+	})
+	
+	function toggleChat(){
+		document.getElementById("chatInput").style.display = "inline-block";
+		document.getElementById("say_hello").style.display = "none";
+		document.getElementById("chatInput").focus();
+	}
+	
+	function respondP2P(data=null, tid=false){
+		if (data===null){
+			data = prompt("Enter something to say to all of chat");
+		}
+		if (!data){return;}
+		data = data.trim();
+		if (!data){return;}
+		var msg = {};
+		msg.overlayNinja = {};
+		msg.overlayNinja.tid = tid;
+		msg.overlayNinja.response = data;
+		iframe.contentWindow.postMessage({"sendData":msg, "type": "rpcs"}, '*'); // send only to 'viewers' of this stream
+	}
+	
+	</script>
+	</body>
+</html>
